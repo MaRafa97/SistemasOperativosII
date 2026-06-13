@@ -8,9 +8,7 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- MathJax CDN para renderizar LaTeX de forma nativa y perfecta en el HTML -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/dist/solid.js"></script>
+  <!-- MathJax CDN seguro para renderizar LaTeX de forma nativa y perfecta en el HTML -->
   <script id="MathJax-config" type="text/javascript">
     window.MathJax = {
       tex: {
@@ -23,6 +21,7 @@
       }
     };
   </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
   <script>
     tailwind.config = {
@@ -217,16 +216,16 @@
               <div class="mt-4 p-3 bg-slate-950/80 rounded-2xl text-xs text-slate-400 flex items-start gap-2 border border-slate-800/80 leading-relaxed">
                 <svg class="w-8 h-8 text-amber-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                 <div>
-                  <strong class="text-slate-200">Enfoque de Seguridad:</strong> El hardware valida la asimetría: $0 \le d_L < L$ [cite: ICBS 310 GEST DE SO.pdf]. Si una instrucción de software viola esta condición, la MMU emite una interrupción hardware llamada **Trap** (o excepción del procesador por fallo de protección general, "Segmentation Fault"), previniendo que un proceso comprometido corrompa la memoria física de otros programas o del propio Kernel.
+                  <strong class="text-slate-200">Enfoque de Seguridad:</strong> El hardware valida la asimetría: $0 \le d_L < L$. Si una instrucción de software viola esta condición, la MMU emite una interrupción hardware llamada **Trap** (o excepción del procesador por fallo de protección general, "Segmentation Fault"), previniendo que un proceso comprometido corrompa la memoria física de otros programas o del propio Kernel.
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- DIAPOSITIVA 2: ALGORITMOS DE AJUSTE Y FRAGMENTACIÓN -->
+        <!-- DIAPOSITIVA 2: ALGORITMOS DE AJUSTE E FRAGMENTACIÓN -->
         <div class="slide-content hidden space-y-4">
-          <div class="border-b border-slate-800 pb-3">
+          <div class="border-b border-slate-850 pb-3">
             <h2 class="text-2xl font-black text-sky-400">2. Algoritmos de Ajuste de Memoria</h2>
             <p class="text-xs text-slate-400 font-mono">Degradación física de la memoria primaria mediante asignación dinámica y fragmentación.</p>
           </div>
@@ -381,11 +380,11 @@
                 <ul class="space-y-4">
                   <li>
                     <strong class="text-slate-200 block text-sm">Secuencial:</strong>
-                    <span class="text-slate-400 text-[11px] leading-normal block mt-1">El puntero de lectura avanza byte por byte o registro por registro desde el inicio. Costo computacional $O(N)$ en el peor de los casos [cite: ICBS 310 GEST DE SO.pdf].</span>
+                    <span class="text-slate-400 text-[11px] leading-normal block mt-1">El puntero de lectura avanza byte por byte o registro por registro desde el inicio. Costo computacional $O(N)$ en el peor de los casos.</span>
                   </li>
                   <li>
                     <strong class="text-slate-200 block text-sm">Aleatorio / Directo:</strong>
-                    <span class="text-slate-400 text-[11px] leading-normal block mt-1">La CPU calcula directamente la dirección del bloque de disco utilizando el tamaño de registro fijo $R$: $Offset = n \times R$ [cite: ICBS 310 GEST DE SO.pdf]. Velocidad de acceso constante $O(1)$.</span>
+                    <span class="text-slate-400 text-[11px] leading-normal block mt-1">La CPU calcula directamente la dirección del bloque de disco utilizando el tamaño de registro fijo $R$: $Offset = n \times R$. Velocidad de acceso constante $O(1)$.</span>
                   </li>
                   <li>
                     <strong class="text-slate-200 block text-sm">Indexado:</strong>
@@ -442,7 +441,7 @@
           </div>
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             <div class="lg:col-span-5 space-y-4 text-xs leading-relaxed">
-              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
+              <div class="bg-slate-900/85 p-4 rounded-xl border border-slate-800 space-y-3">
                 <h3 class="text-sm font-bold text-violet-400 uppercase tracking-widest">Estructura del Proceso en la RAM</h3>
                 <p class="text-slate-400">Cuando el cargador del sistema operativo mapea un programa ejecutable en la RAM, divide el espacio lógico de direcciones del proceso en cuatro segmentos específicos:</p>
                 <ul class="space-y-3 text-slate-400 pl-4 list-disc">
@@ -480,7 +479,7 @@
 
                 <div class="p-3 bg-violet-950/30 border border-violet-500/20 rounded-xl text-xs text-slate-400 leading-normal font-mono">
                   <strong class="text-violet-300 block mb-1">Riesgo de Seguridad en Handles:</strong>
-                  Si un programa no llama de forma adecuada a la función de cierre (<code class="text-pink-400">CloseHandle</code> / <code class="text-pink-400">close()</code>) se produce una **Fuga de Handles** [cite: ICBS 310 GEST DE SO.pdf, image_6f2d9e.png]. El sistema operativo acumulará punteros a objetos en la memoria protegida del Kernel hasta causar una **Denegación de Servicio (DoS)** interna, obligando al reinicio total del host físico.
+                  Si un programa no llama de forma adecuada a la función de cierre (<code class="text-pink-400">CloseHandle</code> / <code class="text-pink-400">close()</code>) se produce una **Fuga de Handles**. El sistema operativo acumulará punteros a objetos en la memoria protegida del Kernel hasta causar una **Denegación de Servicio (DoS)** interna, obligando al reinicio total del host físico.
                 </div>
               </div>
             </div>
@@ -675,7 +674,7 @@
           Anterior
         </button>
         
-        <div class="hidden sm:flex gap-1.5" id="dots-container font-mono">
+        <div class="hidden sm:flex gap-1.5 font-mono" id="dots-container">
           <!-- Puntos indicadores -->
         </div>
 
