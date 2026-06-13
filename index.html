@@ -230,64 +230,112 @@
             <p class="text-xs text-slate-400 font-mono">Degradación física de la memoria primaria mediante asignación dinámica y fragmentación.</p>
           </div>
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            <div class="lg:col-span-5 space-y-4 text-xs leading-relaxed">
+            <div class="lg:col-span-5 space-y-3 text-xs leading-relaxed">
               <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 space-y-2">
                 <h3 class="text-sm font-bold text-sky-400 uppercase tracking-wide">Análisis Formal de Fragmentación</h3>
-                <div class="space-y-3">
+                <div class="space-y-2">
                   <div class="p-3 bg-slate-950 rounded-xl border-l-4 border-sky-500">
                     <strong class="text-slate-200 block mb-1">Fragmentación Externa:</strong>
                     <p class="text-slate-400 leading-normal">
-                      Se presenta cuando la sumatoria de todos los bloques libres de memoria satisface matemáticamente los requisitos de un proceso entrante, pero la memoria se encuentra dispersa en huecos no contiguos:
+                      La suma de todos los huecos libres satisface el proceso, pero ningún hueco contiguo individual es suficiente:
                       $$\sum \text{Huecos\_Libres} \ge \text{Tamaño\_Proceso}$$
-                      Sin embargo, para cualquier hueco individual:
                       $$\forall h_i \in H_L, \quad h_i < \text{Tamaño\_Proceso}$$
                     </p>
                   </div>
                   <div class="p-3 bg-slate-950 rounded-xl border-l-4 border-amber-500">
                     <strong class="text-slate-200 block mb-1">Fragmentación Interna:</strong>
                     <p class="text-slate-400 leading-normal">
-                      Memoria asignada a un proceso que es mayor que sus necesidades actuales. Se produce desperdicio estructural dentro de la partición fija del sistema:
-                      $$\Delta = Tamaño\_Partición - Tamaño\_Proceso$$
+                      Desperdicio dentro de la partición asignada — el bloque es mayor que el proceso:
+                      $$\Delta_{int} = Tamaño\_Bloque - Tamaño\_Proceso$$
                     </p>
+                  </div>
+                  <div class="p-3 bg-slate-950 rounded-xl border-l-4 border-emerald-500">
+                    <strong class="text-slate-200 block mb-1">Compactación (Solución):</strong>
+                    <p class="text-slate-400 leading-normal">
+                      El SO reorganiza físicamente los procesos en RAM consolidando todos los huecos dispersos en un único bloque contiguo. Requiere soporte de relocalización dinámica (MMU).
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800 font-mono">
+                <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-2">Comparativa de Algoritmos</div>
+                <div class="space-y-1.5 text-[11px]">
+                  <div class="flex justify-between items-center p-2 bg-slate-950 rounded-lg">
+                    <span class="text-sky-400 font-bold">First Fit</span>
+                    <span class="text-slate-400">Primera cavidad ≥ proceso. Más rápido.</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 bg-slate-950 rounded-lg">
+                    <span class="text-emerald-400 font-bold">Best Fit</span>
+                    <span class="text-slate-400">Menor hueco residual. Minimiza frag. interna.</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 bg-slate-950 rounded-lg">
+                    <span class="text-violet-400 font-bold">Worst Fit</span>
+                    <span class="text-slate-400">Mayor hueco residual. Maximiza remanente útil.</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Simulador de RAM -->
-            <div class="lg:col-span-7 bg-slate-900/40 p-5 rounded-3xl border border-slate-800 flex flex-col justify-between">
+            <!-- Simulador de RAM mejorado -->
+            <div class="lg:col-span-7 bg-slate-900/40 p-5 rounded-3xl border border-slate-800 flex flex-col gap-3">
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block font-mono">Simulación Interactiva del Kernel</span>
+                  <h4 class="text-sm font-extrabold text-slate-200">Asignador Dinámico de Memoria RAM</h4>
+                </div>
+                <button id="ram-reset" class="flex items-center gap-1 text-xs bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-xl text-slate-300 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89" /></svg>
+                  Restablecer
+                </button>
+              </div>
+
+              <!-- Mapa visual de memoria -->
               <div>
-                <div class="flex justify-between items-center mb-4">
-                  <h4 class="text-sm font-extrabold text-slate-200 uppercase font-mono">Simulador de Asignación Contigua Dinámica</h4>
-                  <button id="ram-reset" class="flex items-center gap-1 text-xs bg-slate-800 hover:bg-slate-700 px-2.5 py-1.5 rounded-xl text-slate-300 transition">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89" /></svg>
-                    Restablecer Bloques
-                  </button>
+                <div class="flex justify-between items-center text-[10px] font-mono mb-1">
+                  <span class="text-slate-500">Mapa de Memoria RAM (1700 MB)</span>
+                  <span id="ram-stats" class="text-slate-400">—</span>
                 </div>
-
-                <div class="space-y-2 mb-4">
-                  <span class="text-xs text-slate-400 block font-mono">Mapa de Memoria Primaria (Física):</span>
-                  <div id="ram-blocks" class="flex h-14 rounded-xl overflow-hidden border border-slate-700 bg-slate-950 shadow-inner">
-                    <!-- JS generará las particiones -->
-                  </div>
-                </div>
-
-                <div class="flex gap-3 mb-4 items-end text-xs">
-                  <div class="flex-grow">
-                    <label class="text-slate-400 block mb-1 font-mono">Tamaño del Proceso a Asignar (MB)</label>
-                    <input id="ram-p-size" type="number" value="212" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-sky-400 focus:outline-none font-bold text-center">
-                  </div>
-                  <div class="flex gap-1.5">
-                    <button id="btn-ff" class="bg-sky-600 hover:bg-sky-500 text-slate-950 font-bold px-3 py-2 rounded-xl transition shadow">First Fit</button>
-                    <button id="btn-bf" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold px-3 py-2 rounded-xl transition shadow">Best Fit</button>
-                    <button id="btn-wf" class="bg-violet-600 hover:bg-violet-500 text-slate-950 font-bold px-3 py-2 rounded-xl transition shadow">Worst Fit</button>
-                  </div>
-                </div>
-
-                <div id="ram-log" class="bg-slate-950 p-3 rounded-2xl border border-slate-800 h-28 overflow-y-auto font-mono text-[10px] text-slate-400 custom-scrollbar">
-                  <!-- Log del despachador -->
+                <div id="ram-blocks" class="flex h-14 rounded-xl overflow-hidden border border-slate-700 bg-slate-950 shadow-inner"></div>
+                <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1.5">
+                  <span class="flex items-center gap-1 text-[9px] font-mono text-slate-500"><span class="w-2.5 h-2.5 rounded-sm bg-sky-900/70 border border-sky-700 inline-block"></span>Libre</span>
+                  <span class="flex items-center gap-1 text-[9px] font-mono text-slate-500"><span class="w-2.5 h-2.5 rounded-sm bg-violet-600 inline-block"></span>Proceso</span>
+                  <span class="flex items-center gap-1 text-[9px] font-mono text-slate-500"><span class="w-2.5 h-2.5 rounded-sm bg-amber-700/60 inline-block"></span>Frag. Interna</span>
+                  <span class="text-[9px] font-mono text-slate-600 italic">← clic en proceso para liberarlo</span>
                 </div>
               </div>
+
+              <!-- Indicador de Fragmentación Externa -->
+              <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1.5 font-mono text-[10px]">
+                <div class="flex justify-between text-slate-400">
+                  <span>Fragmentación Externa</span>
+                  <span id="frag-ext-val" class="font-bold text-slate-300">0%</span>
+                </div>
+                <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div id="frag-ext-bar" class="h-full bg-emerald-500 transition-all duration-500 rounded-full" style="width:0%"></div>
+                </div>
+                <div id="frag-ext-note" class="text-slate-600 italic">Sin fragmentación detectada.</div>
+              </div>
+
+              <!-- Controles -->
+              <div class="flex gap-2 items-end text-xs">
+                <div class="flex-grow">
+                  <label class="text-slate-400 block mb-1 font-mono">Tamaño del Proceso (MB)</label>
+                  <input id="ram-p-size" type="number" value="212" min="1" max="1700" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-sky-400 focus:outline-none font-bold text-center">
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <div class="flex gap-1.5">
+                    <button id="btn-ff" class="bg-sky-600 hover:bg-sky-500 text-slate-950 font-bold px-3 py-2 rounded-xl transition shadow text-xs">First Fit</button>
+                    <button id="btn-bf" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold px-3 py-2 rounded-xl transition shadow text-xs">Best Fit</button>
+                    <button id="btn-wf" class="bg-violet-600 hover:bg-violet-500 text-slate-950 font-bold px-3 py-2 rounded-xl transition shadow text-xs">Worst Fit</button>
+                  </div>
+                  <button id="btn-compact" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-3 py-1.5 rounded-xl transition shadow text-xs w-full">
+                    ⚡ Compactar Memoria
+                  </button>
+                </div>
+              </div>
+
+              <!-- Log del despachador -->
+              <div id="ram-log" class="bg-slate-950 p-3 rounded-2xl border border-slate-800 h-24 overflow-y-auto font-mono text-[9px] text-slate-400 custom-scrollbar leading-relaxed"></div>
             </div>
           </div>
         </div>
@@ -816,85 +864,178 @@
     mmuLogicalInput.addEventListener('input', calculateMMU);
 
     // --- SIMULADOR ALGORITMOS DE RAM (DIAPOSITIVA 2) ---
-    let ramBlocks = [100, 500, 200, 300, 600];
-    const originalBlocks = [100, 500, 200, 300, 600];
+    const RAM_TOTAL_MB = 1700;
+    const RAM_ORIGINAL_SIZES = [100, 500, 200, 300, 600];
+    const RAM_PROC_COLORS = ['bg-violet-600','bg-pink-600','bg-indigo-500','bg-rose-600','bg-purple-600','bg-fuchsia-600','bg-blue-600','bg-teal-600'];
+    let ramSlots, ramNextPid, ramColorIdx;
     const ramBlocksContainer = document.getElementById('ram-blocks');
     const ramLog = document.getElementById('ram-log');
     const ramPSizeInput = document.getElementById('ram-p-size');
+    const ramStatsEl = document.getElementById('ram-stats');
+    const fragExtBar = document.getElementById('frag-ext-bar');
+    const fragExtVal = document.getElementById('frag-ext-val');
+    const fragExtNote = document.getElementById('frag-ext-note');
+
+    function initRamSlots() {
+      ramSlots = RAM_ORIGINAL_SIZES.map((size, idx) => ({ id: idx, total: size, process: null }));
+      ramNextPid = 1;
+      ramColorIdx = 0;
+    }
+
+    function updateFragStats() {
+      let used = 0, intFrag = 0;
+      const freeHoles = [];
+      ramSlots.forEach(s => {
+        if (s.process) {
+          used += s.process.size;
+          const rem = s.total - s.process.size;
+          if (rem > 0) { intFrag += rem; freeHoles.push(rem); }
+        } else {
+          freeHoles.push(s.total);
+        }
+      });
+      const totalFreeAll = freeHoles.reduce((a, b) => a + b, 0);
+      const largestFreeHole = freeHoles.length > 0 ? Math.max(...freeHoles) : 0;
+
+      ramStatsEl.textContent = `Usada: ${used}MB | Libre: ${totalFreeAll}MB | F.Int: ${intFrag}MB`;
+
+      const extFragPct = (freeHoles.length > 1 && totalFreeAll > 0)
+        ? Math.round(((totalFreeAll - largestFreeHole) / totalFreeAll) * 100) : 0;
+
+      fragExtBar.style.width = `${extFragPct}%`;
+      fragExtBar.className = `h-full transition-all duration-500 rounded-full ${extFragPct > 50 ? 'bg-red-500' : extFragPct > 20 ? 'bg-amber-500' : 'bg-emerald-500'}`;
+      fragExtVal.textContent = `${extFragPct}%`;
+      fragExtNote.textContent = extFragPct > 0
+        ? `${freeHoles.length} huecos dispersos. Mayor bloque contiguo libre: ${largestFreeHole}MB`
+        : freeHoles.length === 1 ? `Un único bloque libre contiguo de ${largestFreeHole}MB`
+        : totalFreeAll === 0 ? 'Memoria completamente ocupada.' : 'Sin fragmentación externa detectada.';
+    }
 
     function renderRAM() {
       ramBlocksContainer.innerHTML = '';
-      ramBlocks.forEach((size, idx) => {
+      ramSlots.forEach(slot => {
+        const w = (slot.total / RAM_TOTAL_MB) * 100;
         const blockDiv = document.createElement('div');
-        const percent = (size / 1700) * 100;
-        blockDiv.style.width = `${percent}%`;
-        blockDiv.className = "border-r border-slate-800 h-full flex flex-col items-center justify-center text-center p-1 bg-cyber-900/40 relative";
-        
-        blockDiv.innerHTML = `
-          <span class="text-[10px] font-bold text-slate-300">B${idx+1}</span>
-          <span class="text-[9px] text-sky-400 font-mono font-bold">${size}MB</span>
-        `;
+        blockDiv.style.width = `${w}%`;
+        blockDiv.className = 'relative border-r border-slate-700/50 h-full flex overflow-hidden';
+
+        if (slot.process === null) {
+          const d = document.createElement('div');
+          d.className = 'w-full h-full bg-sky-900/40 hover:bg-sky-900/60 transition flex flex-col items-center justify-center cursor-default';
+          d.innerHTML = `<span class="text-[9px] font-bold text-sky-500 font-mono leading-none">${slot.total}MB</span><span class="text-[8px] text-sky-700 font-mono uppercase leading-none mt-0.5">libre</span>`;
+          blockDiv.appendChild(d);
+        } else {
+          const { size, pid, colorClass } = slot.process;
+          const intFrag = slot.total - size;
+          const procPct = (size / slot.total) * 100;
+          const pd = document.createElement('div');
+          pd.style.width = `${procPct}%`;
+          pd.className = `${colorClass} h-full flex flex-col items-center justify-center cursor-pointer hover:brightness-125 transition select-none`;
+          pd.title = `Clic para liberar P${pid} (${size}MB)`;
+          pd.innerHTML = `<span class="text-[9px] font-bold text-white font-mono leading-none">P${pid}</span><span class="text-[8px] text-white/70 font-mono leading-none">${size}MB</span>`;
+          pd.addEventListener('click', () => freeRamProcess(slot.id));
+          blockDiv.appendChild(pd);
+          if (intFrag > 0) {
+            const fd = document.createElement('div');
+            fd.style.width = `${100 - procPct}%`;
+            fd.className = 'bg-amber-800/50 h-full flex flex-col items-center justify-center';
+            fd.innerHTML = `<span class="text-[8px] text-amber-400 font-mono leading-none">${intFrag}MB</span><span class="text-[7px] text-amber-600 font-mono">F.I.</span>`;
+            blockDiv.appendChild(fd);
+          }
+        }
         ramBlocksContainer.appendChild(blockDiv);
       });
+      updateFragStats();
+    }
+
+    function freeRamProcess(slotId) {
+      const slot = ramSlots.find(s => s.id === slotId);
+      if (!slot || !slot.process) return;
+      const { pid, size } = slot.process;
+      slot.process = null;
+      renderRAM();
+      logRAM(`P${pid} (${size}MB) liberado. Bloque B${slotId + 1} (${slot.total}MB) devuelto al gestor de memoria.`, 'free');
     }
 
     function allocateRAM(mode) {
       const pSize = parseInt(ramPSizeInput.value) || 0;
-      if (pSize <= 0) return;
+      if (pSize <= 0 || pSize > RAM_TOTAL_MB) { logRAM(`Tamaño inválido: ${pSize}MB`, 'error'); return; }
 
-      let allocatedIdx = -1;
+      const freeSlots = ramSlots.filter(s => s.process === null && s.total >= pSize);
+      const allFreeSlots = ramSlots.filter(s => s.process === null);
+      const totalFree = allFreeSlots.reduce((sum, s) => sum + s.total, 0);
+
+      if (freeSlots.length === 0) {
+        if (totalFree >= pSize) {
+          const holeStr = allFreeSlots.map(s => `B${s.id + 1}(${s.total}MB)`).join(', ');
+          logRAM(`⚠ FRAG. EXTERNA: Necesita ${pSize}MB. Libre total: ${totalFree}MB en ${allFreeSlots.length} huecos [${holeStr}]. Ninguno es contiguo suficiente. → Ejecuta Compactación.`, 'error');
+        } else {
+          logRAM(`✗ Sin memoria: Necesita ${pSize}MB. Solo ${totalFree}MB disponibles en total.`, 'error');
+        }
+        return;
+      }
+
+      let target = null, logDetail = '';
 
       if (mode === 'First') {
-        for (let i = 0; i < ramBlocks.length; i++) {
-          if (ramBlocks[i] >= pSize) {
-            allocatedIdx = i;
-            break;
-          }
+        const steps = [];
+        for (const s of ramSlots) {
+          if (s.process !== null) { steps.push(`B${s.id + 1}[ocupado]`); continue; }
+          if (s.total < pSize) { steps.push(`B${s.id + 1}(${s.total}MB<${pSize})`); continue; }
+          target = s; steps.push(`B${s.id + 1}(${s.total}MB ✓)`); break;
         }
+        logDetail = `First Fit | Escaneo: ${steps.join(' → ')}`;
       } else if (mode === 'Best') {
-        let minDiff = Infinity;
-        for (let i = 0; i < ramBlocks.length; i++) {
-          if (ramBlocks[i] >= pSize && (ramBlocks[i] - pSize) < minDiff) {
-            minDiff = ramBlocks[i] - pSize;
-            allocatedIdx = i;
-          }
-        }
+        let minW = Infinity;
+        const cands = freeSlots.map(s => { const w = s.total - pSize; if (w < minW) { minW = w; target = s; } return `B${s.id + 1}(Δ=${w}MB)`; });
+        logDetail = `Best Fit | Candidatos: ${cands.join(', ')} → Menor desperdicio: B${target.id + 1}`;
       } else if (mode === 'Worst') {
-        let maxDiff = -1;
-        for (let i = 0; i < ramBlocks.length; i++) {
-          if (ramBlocks[i] >= pSize && (ramBlocks[i] - pSize) > maxDiff) {
-            maxDiff = ramBlocks[i] - pSize;
-            allocatedIdx = i;
-          }
-        }
+        let maxW = -1;
+        const cands = freeSlots.map(s => { const w = s.total - pSize; if (w > maxW) { maxW = w; target = s; } return `B${s.id + 1}(Δ=${w}MB)`; });
+        logDetail = `Worst Fit | Candidatos: ${cands.join(', ')} → Mayor remanente: B${target.id + 1}`;
       }
 
-      if (allocatedIdx !== -1) {
-        const rest = ramBlocks[allocatedIdx] - pSize;
-        ramBlocks[allocatedIdx] = rest;
-        renderRAM();
-        logRAM(`Proceso de ${pSize}MB asignado en Bloque ${allocatedIdx + 1} (${mode} Fit). Sobra residual (Fragmentación Interna): ${rest}MB`, 'success');
-      } else {
-        logRAM(`ERROR: Proceso de ${pSize}MB no cabe en memoria contigua. Falló colocación por Fragmentación Externa.`, 'error');
-      }
+      const colorClass = RAM_PROC_COLORS[ramColorIdx % RAM_PROC_COLORS.length];
+      ramColorIdx++;
+      const waste = target.total - pSize;
+      target.process = { pid: ramNextPid, size: pSize, colorClass };
+      ramNextPid++;
+      renderRAM();
+      logRAM(`✓ ${logDetail} | P${ramNextPid - 1}(${pSize}MB) → B${target.id + 1}(${target.total}MB) | Frag.Interna: ${waste}MB`, 'success');
+    }
+
+    function compactRAM() {
+      const occupied = ramSlots.filter(s => s.process !== null);
+      if (occupied.length === 0) { logRAM('Compactación innecesaria: no hay procesos en memoria.', 'info'); return; }
+      const totalFree = ramSlots.reduce((sum, s) => sum + (s.process === null ? s.total : s.total - s.process.size), 0);
+      const holesBefore = ramSlots.filter(s => s.process === null || s.total > s.process.size).length;
+      let newId = 0;
+      ramSlots = [
+        ...occupied.map(s => ({ id: newId++, total: s.process.size, process: { ...s.process } })),
+        ...(totalFree > 0 ? [{ id: newId, total: totalFree, process: null }] : [])
+      ];
+      renderRAM();
+      logRAM(`⚡ Compactación ejecutada: ${holesBefore} huecos dispersos → 1 bloque contiguo de ${totalFree}MB. Fragmentación externa eliminada.`, 'compact');
     }
 
     function logRAM(msg, type) {
+      const colors = { error: 'text-red-400 font-bold', success: 'text-emerald-400', free: 'text-sky-400', compact: 'text-amber-400 font-bold', info: 'text-slate-500 italic' };
       const p = document.createElement('p');
-      p.className = type === 'error' ? 'text-red-400 font-bold' : 'text-emerald-400';
-      p.textContent = `[Despachador Memoria] ${msg}`;
+      p.className = colors[type] || 'text-slate-400';
+      p.textContent = msg;
       ramLog.insertBefore(p, ramLog.firstChild);
     }
 
     document.getElementById('ram-reset').addEventListener('click', () => {
-      ramBlocks = [...originalBlocks];
+      initRamSlots();
       renderRAM();
-      ramLog.innerHTML = `<span class="text-slate-500 block mb-1">// Historial de Asignador de Memoria del Kernel restablecido...</span>`;
+      ramLog.innerHTML = '<span class="text-slate-500 italic">// Asignador de memoria restablecido. Bloques: [100, 500, 200, 300, 600] MB</span>';
     });
 
     document.getElementById('btn-ff').addEventListener('click', () => allocateRAM('First'));
     document.getElementById('btn-bf').addEventListener('click', () => allocateRAM('Best'));
     document.getElementById('btn-wf').addEventListener('click', () => allocateRAM('Worst'));
+    document.getElementById('btn-compact').addEventListener('click', compactRAM);
 
     // --- SIMULADOR DE TABLA HASH (DIAPOSITIVA 4) ---
     const hashTableSize = 7;
@@ -1009,8 +1150,9 @@
       initDots();
       updateSlide();
       calculateMMU();
+      initRamSlots();
       renderRAM();
-      logRAM("Kernel cargado. Modo simulación de particiones variables de RAM listo.", 'info');
+      logRAM('Sistema inicializado. 5 bloques: [100, 500, 200, 300, 600]MB. Asigna procesos con los algoritmos y haz clic sobre un proceso para liberarlo.', 'info');
       renderHash();
       updateProcessState('Nuevo');
     });
