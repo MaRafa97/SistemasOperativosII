@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentación Interactiva - Gestión de Sistemas Operativos</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              950: '#030712',
+              900: '#0f172a',
+              800: '#1e293b',
+              light: '#38bdf8',
+              accent: '#10b981'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Transiciones suaves para las diapositivas */
+    .slide-container {
+      transition: opacity 0.3s ease-in-out;
+    }
+    /* Estilos personalizados para barras de scroll en terminales simuladas */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="bg-cyber-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans selection:bg-sky-500 selection:text-slate-950">
+
+  <!-- Cabecera global -->
+  <header class="border-b border-slate-800/80 bg-cyber-950/80 backdrop-blur-md px-6 py-4 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-gradient-to-br from-sky-500 to-indigo-600 rounded-lg">
+          <!-- Icono de libro/código SVG -->
+          <svg class="w-6 h-6 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-xs font-bold text-sky-400 block uppercase tracking-wider">UNIVERSIDAD ALIANZA HISPANA</span>
+          <span class="text-sm font-extrabold text-slate-100 tracking-tight">Gestión de Sistemas Operativos</span>
+        </div>
+      </div>
+      
+      <!-- Criterios de Evaluación en Cabecera para el Alumno -->
+      <div class="hidden lg:flex items-center gap-4 text-xs text-slate-400">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-red-500"></span>
+          <span>Examen: 60%</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Prácticas: 30%</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+          <span>Asistencia: 10%</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 px-4 py-1 rounded-full text-xs font-semibold text-slate-400" id="slide-indicator">
+        Cargando...
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal de la Presentación -->
+  <main class="flex-grow flex items-center justify-center p-4 md:p-8 max-w-7xl w-full mx-auto">
+    <div class="w-full bg-slate-950 border border-slate-800/80 rounded-3xl p-6 md:p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden min-h-[550px]">
+      
+      <!-- Degradados de fondo decorativos -->
+      <div class="absolute -top-40 -left-40 w-80 h-80 bg-sky-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-40 -right-40 w-80 h-80 bg-violet-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- Diapositivas (Se controlan mediante JS) -->
+      <div id="slides-viewport" class="relative z-10 flex-grow">
+        
+        <!-- DIAPOSITIVA 0: PORTADA -->
+        <div class="slide-content hidden flex flex-col items-center justify-center text-center py-8 space-y-6">
+          <div class="p-4 bg-sky-950/40 border border-sky-500/30 rounded-2xl animate-pulse">
+            <svg class="w-20 h-20 text-sky-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-sky-400 via-emerald-400 to-indigo-500 bg-clip-text text-transparent">
+            Gestión de Sistemas Operativos
+          </h1>
+          <p class="text-slate-400 max-w-2xl text-lg">
+            Guía de estudio interactiva para Ingeniería en Ciberseguridad. Analiza la arquitectura del kernel, la protección de memoria y los esquemas de acceso a archivos.
+          </p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl pt-8">
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-center">
+              <span class="text-sky-400 font-bold block text-xl">Bloque 1</span>
+              <span class="text-xs text-slate-400">Gestión de Memoria</span>
+            </div>
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-center">
+              <span class="text-emerald-400 font-bold block text-xl">Bloque 2</span>
+              <span class="text-xs text-slate-400">Sistemas de Archivos</span>
+            </div>
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-center">
+              <span class="text-violet-400 font-bold block text-xl">Bloque 3</span>
+              <span class="text-xs text-slate-400">Gestión de Procesos</span>
+            </div>
+            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 text-center">
+              <span class="text-amber-400 font-bold block text-xl">Bloque 4</span>
+              <span class="text-xs text-slate-400">Usuarios y Hardening</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIAPOSITIVA 1: TIEMPOS DE ASIGNACIÓN Y DIRECCIONAMIENTO -->
+        <div class="slide-content hidden space-y-4">
+          <div class="border-b border-slate-800 pb-3 mb-4">
+            <h2 class="text-2xl font-extrabold text-sky-400">1. Gestión de Memoria: El Enlace de Direcciones</h2>
+            <p class="text-sm text-slate-400">La traducción crítica entre variables lógicas de software y celdas físicas de hardware.</p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div class="lg:col-span-6 space-y-4">
+              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
+                <h3 class="text-md font-bold text-sky-400 flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                  Tiempos de Asignación (Binding Time)
+                </h3>
+                <ul className="space-y-2 text-xs text-slate-400">
+                  <li class="mb-2"><strong class="text-slate-200">De Compilación:</strong> Se genera código absoluto. Las direcciones físicas finales quedan grabadas de forma estática en el ejecutable.</li>
+                  <li class="mb-2"><strong class="text-slate-200">De Liga / Carga:</strong> El compilador deja referencias simbólicas y el cargador del S.O. asigna las direcciones físicas en el momento que carga el programa en RAM.</li>
+                  <li class="mb-2"><strong class="text-slate-200">De Ejecución:</strong> Las direcciones cambian dinámicamente sobre la marcha si el proceso es movido por el kernel. Requiere soporte de hardware (la MMU).</li>
+                </ul>
+              </div>
+              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2 text-xs">
+                <h3 class="text-sm font-bold text-sky-400 uppercase tracking-widest">Direcciones Lógicas vs Físicas</h3>
+                <p class="text-slate-300"><strong class="text-sky-300">Dirección Lógica (Virtual):</strong> Generada por la CPU para cada proceso de manera abstracta. El programa asume que cuenta con su propia memoria empezando desde la posición <code class="bg-slate-950 px-1 py-0.5 rounded text-pink-400 font-mono">0</code>.</p>
+                <p class="text-slate-300"><strong class="text-emerald-300">Dirección Física:</strong> La ubicación real y cableada dentro de los chips de memoria RAM.</p>
+              </div>
+            </div>
+
+            <!-- Simulador MMU -->
+            <div class="lg:col-span-6 bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+              <div>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2">Simulador Interactivo de Hardware</span>
+                <h4 class="text-lg font-semibold text-slate-200 mb-4">Traducción de Direcciones (MMU)</h4>
+                
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                  <div>
+                    <label class="text-xs text-slate-400 block mb-1">Reg. Base</label>
+                    <input id="mmu-base" type="number" value="14000" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-sm text-sky-400 focus:outline-none focus:border-sky-500">
+                  </div>
+                  <div>
+                    <label class="text-xs text-slate-400 block mb-1">Reg. Límite</label>
+                    <input id="mmu-limit" type="number" value="500" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-sm text-amber-400 focus:outline-none focus:border-amber-500">
+                  </div>
+                  <div>
+                    <label class="text-xs text-slate-400 block mb-1">Dir. Lógica</label>
+                    <input id="mmu-logical" type="number" value="250" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-sm text-pink-400 focus:outline-none focus:border-pink-500">
+                  </div>
+                </div>
+
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+                  <div class="flex justify-between text-xs text-slate-400">
+                    <span>Evaluación de límites:</span>
+                    <span id="mmu-check">Cargando...</span>
+                  </div>
+                  <div id="mmu-result" class="p-3 rounded text-center font-mono font-bold text-sm bg-emerald-950/60 border border-emerald-500/50 text-emerald-400">
+                    Calculando...
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 p-3 bg-slate-950/60 rounded-xl text-xs text-slate-400 flex items-start gap-2 border border-slate-800">
+                <svg class="w-8 h-8 text-amber-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div>
+                  <strong class="text-slate-200">Nota de Ciberseguridad:</strong> Un ataque de desbordamiento de búfer (*buffer overflow*) intenta corromper el stack para desviar el flujo de ejecución hacia áreas prohibidas por el Registro Límite.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIAPOSITIVA 2: ALGORITMOS DE AJUSTE Y FRAGMENTACIÓN -->
+        <div class="slide-content hidden space-y-4">
+          <div class="border-b border-slate-800 pb-3 mb-4">
+            <h2 class="text-2xl font-extrabold text-sky-400">2. Algoritmos de Ajuste de Memoria</h2>
+            <p class="text-sm text-slate-400">Estrategias de colocación del sistema operativo y su impacto directo en el desperdicio de RAM.</p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div class="lg:col-span-5 space-y-4">
+              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
+                <h3 class="text-sm font-bold text-sky-400 uppercase tracking-widest">El Problema del Espacio Libre</h3>
+                <div class="space-y-2">
+                  <div class="p-2 bg-slate-950 rounded border-l-4 border-sky-500">
+                    <strong class="text-xs text-slate-200 block">Fragmentación Externa:</strong>
+                    <span class="text-xs text-slate-400">Hay suficiente memoria total libre para satisfacer una solicitud, pero no está contigua (bloques dispersos).</span>
+                  </div>
+                  <div class="p-2 bg-slate-950 rounded border-l-4 border-amber-500">
+                    <strong class="text-xs text-slate-200 block">Fragmentación Interna:</strong>
+                    <span class="text-xs text-slate-400">Espacio desperdiciado de forma residual dentro de una partición fija asignada a un proceso que requería menos memoria.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-2 text-xs text-slate-400">
+                <h3 class="text-sm font-bold text-sky-400 uppercase tracking-widest text-slate-200">Estrategias Comparadas:</h3>
+                <ul class="space-y-1 list-disc list-inside">
+                  <li><strong class="text-slate-300">Primero (First Fit):</strong> Rápido; usa el primer hueco que sirva.</li>
+                  <li><strong class="text-slate-300">Mejor (Best Fit):</strong> Minimiza el residuo buscando el hueco más pequeño utilizable.</li>
+                  <li><strong class="text-slate-300">Peor (Worst Fit):</strong> Asigna el bloque más grande disponible para dejar remanentes grandes.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Simulador de RAM -->
+            <div class="lg:col-span-7 bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-center mb-4">
+                  <h4 class="text-base font-semibold text-slate-200">Simulador de Distribución de RAM</h4>
+                  <button id="ram-reset" class="flex items-center gap-1 text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded text-slate-300 transition">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89" /></svg>
+                    Restaurar RAM
+                  </button>
+                </div>
+
+                <div class="space-y-2 mb-4">
+                  <span class="text-xs text-slate-400 block">Mapa Físico de Memoria RAM:</span>
+                  <div id="ram-blocks" class="flex h-12 rounded-lg overflow-hidden border border-slate-700 bg-slate-950">
+                    <!-- Dinámico por JS -->
+                  </div>
+                </div>
+
+                <div class="flex gap-3 mb-4 items-end">
+                  <div class="flex-1">
+                    <label class="text-xs text-slate-400 block mb-1">Tamaño de Proceso (MB)</label>
+                    <input id="ram-p-size" type="number" value="212" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-sm text-sky-400 focus:outline-none">
+                  </div>
+                  <div class="flex gap-1">
+                    <button id="btn-ff" class="bg-sky-600 hover:bg-sky-500 text-slate-950 text-xs font-bold px-2.5 py-2 rounded transition">First Fit</button>
+                    <button id="btn-bf" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold px-2.5 py-2 rounded transition">Best Fit</button>
+                    <button id="btn-wf" class="bg-violet-600 hover:bg-violet-500 text-slate-950 text-xs font-bold px-2.5 py-2 rounded transition">Worst Fit</button>
+                  </div>
+                </div>
+
+                <div id="ram-log" class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 h-24 overflow-y-auto font-mono text-[10px] text-slate-400 custom-scrollbar">
+                  <!-- Eventos del asignador -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIAPOSITIVA 3: SISTEMAS DE ARCHIVOS - JERARQUÍA -->
+        <div class="slide-content hidden space-y-4">
+          <div class="border-b border-slate-800 pb-3 mb-4">
+            <h2 class="text-2xl font-extrabold text-sky-400">3. Sistemas de Archivos: Estructuras Lógicas</h2>
+            <p class="text-sm text-slate-400">Cómo abstrae el sistema operativo el almacenamiento lógico desde la raíz del sistema.</p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div class="lg:col-span-6 space-y-4">
+              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3 text-xs">
+                <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-widest">Modelos Jerárquicos</h3>
+                
+                <div class="bg-slate-950 p-3 rounded">
+                  <strong class="text-slate-200 block mb-1">Estructura de Árbol:</strong>
+                  <p class="text-slate-400">Estructura jerárquica con un nodo raíz (<code class="text-sky-400">/</code>). Evita colisiones de nombres gracias al uso de rutas absolutas y relativas, y permite delegar permisos por directorios.</p>
+                </div>
+
+                <div class="bg-slate-950 p-3 rounded">
+                  <strong class="text-slate-200 block mb-1">Estructura de Grafos Acíclicos:</strong>
+                  <p class="text-slate-400">Permite ramificar directorios que apuntan de forma compartida al mismo archivo físico en el disco sin duplicar los bytes. Se implementa en Linux/Unix usando enlaces.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estructura de Enlaces Lógicos -->
+            <div class="lg:col-span-6 bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+              <div class="space-y-4">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Diagrama de Grafo Lógico</span>
+                <h4 class="text-md font-semibold text-slate-200">Hard Links vs Symlinks en Unix</h4>
+                
+                <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex justify-center">
+                  <!-- SVG del Grafo -->
+                  <svg viewBox="0 0 400 180" class="w-full max-w-sm">
+                    <!-- Root -->
+                    <rect x="170" y="10" width="60" height="25" rx="5" class="fill-slate-800 stroke-sky-500 stroke-2" />
+                    <text x="200" y="27" text-anchor="middle" class="fill-sky-400 text-[10px] font-bold">Raíz ( / )</text>
+
+                    <!-- Dir A and B -->
+                    <rect x="70" y="70" width="70" height="25" rx="5" class="fill-slate-800 stroke-slate-600 stroke-2" />
+                    <text x="105" y="87" text-anchor="middle" class="fill-slate-300 text-[10px]">/home/user1</text>
+
+                    <rect x="260" y="70" width="70" height="25" rx="5" class="fill-slate-800 stroke-slate-600 stroke-2" />
+                    <text x="295" y="87" text-anchor="middle" class="fill-slate-300 text-[10px]">/home/user2</text>
+
+                    <!-- Shared Node -->
+                    <rect x="150" y="130" width="100" height="30" rx="5" class="fill-emerald-950 stroke-emerald-500 stroke-2" />
+                    <text x="200" y="145" text-anchor="middle" class="fill-emerald-400 text-[10px] font-bold">archivo_compartido</text>
+                    <text x="200" y="155" text-anchor="middle" class="fill-slate-400 text-[8px]">i-nodo: #4582</text>
+
+                    <!-- Connections -->
+                    <line x1="200" y1="35" x2="105" y2="70" class="stroke-slate-600 stroke-2" />
+                    <line x1="200" y1="35" x2="295" y2="70" class="stroke-slate-600 stroke-2" />
+                    
+                    <line x1="105" y1="95" x2="190" y2="130" class="stroke-emerald-500 stroke-2" stroke-dasharray="4" />
+                    <line x1="295" y1="95" x2="210" y2="130" class="stroke-violet-500 stroke-2" />
+                  </svg>
+                </div>
+                <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-[11px] text-slate-400">
+                  <strong class="text-slate-200 font-bold block mb-1">i-nodo (Nodo de Índice):</strong>
+                  Estructura física de datos en disco que guarda los metadatos esenciales del archivo: tamaño, UID (dueño), GID (grupo), permisos y MAC times (timestamps), pero no almacena el nombre del archivo.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIAPOSITIVA 4: MÉTODOS DE ACCESO Y SIMULADOR DE HASH -->
+        <div class="slide-content hidden space-y-4">
+          <div class="border-b border-slate-800 pb-3 mb-4">
+            <h2 class="text-2xl font-extrabold text-sky-400">4. Métodos de Acceso y Colisiones Hash</h2>
+            <p class="text-sm text-slate-400">Cómo lee el kernel la información física y cómo el indexado por hash acelera el rendimiento.</p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div class="lg:col-span-5 space-y-4">
+              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3 text-xs">
+                <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-widest">Mecanismos de Lectura</h3>
+                <ul class="space-y-3">
+                  <li>
+                    <strong class="text-slate-200 block">Secuencial:</strong>
+                    <span class="text-slate-400">Lectura lineal de registros uno por uno. Costo $O(N)$. Típico para lectura de logs de auditoría o procesamiento por lotes.</span>
+                  </li>
+                  <li>
+                    <strong class="text-slate-200 block">Indexado:</strong>
+                    <span class="text-slate-400">Un archivo índice almacena punteros rápidos para realizar saltos directos de lectura en el archivo principal.</span>
+                  </li>
+                  <li>
+                    <strong class="text-slate-200 block">Acceso por Hash:</strong>
+                    <span class="text-slate-400">Calcula la dirección física del bloque mediante una función matemática, logrando una velocidad constante $O(1)$.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Simulador Hash -->
+            <div class="lg:col-span-7 bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+              <div>
+                <div class="flex justify-between items-center mb-3">
+                  <h4 class="text-sm font-semibold text-slate-200">Mapeo Hash y Resolución de Colisiones</h4>
+                  <button id="hash-reset" class="flex items-center gap-1 text-[10px] bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded text-slate-300 transition">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    Limpiar Tabla
+                  </button>
+                </div>
+
+                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 mb-3 space-y-2">
+                  <span class="text-xs text-slate-400 block">Tabla Hash de Direccionamiento (Índices del 0 al 6):</span>
+                  <div class="grid grid-cols-7 gap-1" id="hash-table-slots">
+                    <!-- JS generará los casilleros de la tabla -->
+                  </div>
+                </div>
+
+                <div class="flex gap-2 items-end mb-3">
+                  <div class="flex-1">
+                    <label class="text-[11px] text-slate-400 block mb-1">Clave Numérica de Archivo (Valor K)</label>
+                    <input id="hash-input-key" type="number" value="101" class="w-full bg-slate-950 border border-slate-700 rounded p-1.5 text-xs text-emerald-400 font-mono">
+                  </div>
+                  <div class="text-[10px] text-slate-500 mb-2 font-mono">H(K) = K % 7</div>
+                  <button id="hash-insert" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold px-3 py-2 rounded transition">
+                    Insertar Clave
+                  </button>
+                </div>
+
+                <div id="hash-console" class="bg-slate-950 p-2 rounded-lg border border-slate-800 h-20 overflow-y-auto font-mono text-[9px] text-slate-400 custom-scrollbar">
+                  <!-- Logs del simulador -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIAPOSITIVA 5: GESTIÓN DE PROCESOS - ANATOMÍA EN MEMORIA -->
+        <div class="slide-content hidden space-y-4">
+          <div class="border-b border-slate-800 pb-3 mb-4">
+            <h2 class="text-2xl font-extrabold text-sky-400">5. Gestión de Procesos: PCB y anatomía en Memoria</h2>
+            <p class="text-sm text-slate-400">Cómo vive y se estructura un binario activo bajo el control directo del kernel.</p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div class="lg:col-span-5 space-y-4">
+              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2 text-xs">
+                <h3 class="text-sm font-bold text-violet-400 uppercase tracking-widest">La Abstracción de un Proceso</h3>
+                <p class="text-slate-400">Es la representación que hace el S.O. de un programa en ejecución activa, con recursos físicos asignados por el programador.</p>
+                <h3 class="text-sm font-bold text-violet-400 uppercase tracking-widest mt-3">Estructura en la RAM</h3>
+                <ul class="space-y-1 text-slate-400">
+                  <li class="mb-1"><strong class="text-slate-200">Segmento Texto:</strong> Contiene las instrucciones compiladas en lenguaje de máquina (De solo lectura).</li>
+                  <li class="mb-1"><strong class="text-slate-200">Segmento Datos:</strong> Guarda variables globales e inicializadas.</li>
+                  <li class="mb-1"><strong class="text-slate-200">Heap (Montículo):</strong> Memoria asignada dinámicamente en ejecución (<code class="text-pink-400 font-mono">malloc / new</code>). Crece hacia arriba.</li>
+                  <li class="mb-1"><strong class="text-slate-200">Stack (Pila):</strong> Parámetros de funciones, variables locales y direcciones de retorno de llamadas. Crece hacia abajo.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Estructura del PCB -->
+            <div class="lg:col-span-7 bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+              <div class="space-y-4">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block">PCB: Bloque de Control de Procesos</span>
+                <h4 class="text-sm font-semibold text-slate-200">La Estructura Interna del Kernel (struct task_struct)</h4>
+                
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs space-y-1.5 font-mono">
+                    <div class="text-[10px] text-slate-500 border-b border-slate-800 pb-1 mb-1">// Metadata de Control</div>
+                    <div><strong class="text-slate-400">PID:</strong> 4310</div>
+                    <div><strong class="text-slate-400">UID:</strong> 1000 (Usuario)</div>
+                    <div><strong class="text-slate-400">Estado:</strong> Ejecutando</div>
+                    <div><strong class="text-slate-400">Program Counter:</strong> 0x00FF4D</div>
+                  </div>
+
+                  <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs space-y-1.5 font-mono">
+                    <div class="text-[10px] text-slate-500 border-b border-slate-800 pb-1 mb-1">// Descriptores del Sistema</div>
+                    <div><strong class="text-slate-400">Handles Abiertos:</strong></div>
+                    <div class="text-sky-400 pl-2">→ H-01: config.ini</div>
+                    <div class="text-violet-400 pl-2">→ H-02: Socket Port 443</div>
+                    <div class="text-emerald-400 pl-2">→ H-03: video_drv.sys</div>
+                  </div>
+                </div>
+
+                <div class="p-3 bg-violet-950/40 border border-violet-500/20 rounded-xl text-xs text-slate-400">
+                  <strong class="text-violet-300 block mb-1">Seguridad de Handles:</strong>
+                  Cuando el proceso System o programas del espacio de usuario mantienen handles abiertos y no los liberan, se produce una vulnerabilidad de "Fuga de Handles" (Handle Leak) que satura la memoria interna del kernel, inutilizando el sistema operativo.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIAPOSITIVA 6: ESTADOS, TRANSICIONES E HILOS -->
+        <div class="slide-content hidden space-y-4">
+          <div class="border-b border-slate-800 pb-3 mb-4">
+            <h2 class="text-2xl font-extrabold text-sky-400">6. Estados, Transiciones e Hilos de Procesos</h2>
+            <p class="text-sm text-slate-400">El ciclo de vida de un hilo de ejecución y la asignación del despachador del procesador.</p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div class="lg:col-span-5 space-y-4">
+              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2 text-xs">
+                <h3 class="text-sm font-bold text-violet-400 uppercase tracking-widest">¿Qué es un Hilo (Thread)?</h3>
+                <p class="text-slate-400">La unidad básica de uso de CPU que comparte recursos del proceso padre (como código y variables globales) pero contiene su propia pila y contador de programa para operar de forma concurrente.</p>
+                <h3 class="text-sm font-bold text-violet-400 uppercase tracking-widest mt-2">Algoritmos de Planificación</h3>
+                <ul class="space-y-1 text-slate-400">
+                  <li><strong class="text-slate-200">Round Robin:</strong> Rota el procesador de forma equitativa asignando un intervalo de tiempo llamado Quantum.</li>
+                  <li><strong class="text-slate-200">FCFS (First Come First Served):</strong> Atiende por estricto orden de llegada.</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Máquina de Estados del Procesador -->
+            <div class="lg:col-span-7 bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+              <div>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-1">Máquina de Estados de la CPU</span>
+                <h4 class="text-sm font-semibold text-slate-200 mb-3">Ciclo de Transición de un Proceso en Tiempo Real</h4>
+                
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                  <button id="p-state-ready" class="p-2 rounded text-xs font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition">
+                    1. Admitir (Listo)
+                  </button>
+                  <button id="p-state-running" class="p-2 rounded text-xs font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition" disabled>
+                    2. Despachar (Ejecutando)
+                  </button>
+                  <button id="p-state-blocked" class="p-2 rounded text-xs font-bold bg-slate-800 text-slate-400 hover:bg-slate-700 transition" disabled>
+                    3. Bloquear (Espera E/S)
+                  </button>
+                </div>
+
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col items-center justify-center space-y-3">
+                  <div class="text-xs text-slate-500">// Estado del Proceso de Ciberseguridad:</div>
+                  <div id="p-state-badge" class="px-6 py-2 bg-slate-900 border border-slate-700 rounded-full font-bold text-slate-300">
+                    NUEVO
+                  </div>
+                  
+                  <div id="p-registers-view" class="text-center hidden">
+                    <span class="text-[10px] text-emerald-400 font-mono block">Contexto de Registros en la CPU:</span>
+                    <span class="text-[9px] text-slate-400 font-mono">PC: 0x00A8 | ACC: 42 | SP: 0x7F2A</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIAPOSITIVA 7: GESTIÓN DE USUARIOS Y ACTIVE DIRECTORY -->
+        <div class="slide-content hidden space-y-4">
+          <div class="border-b border-slate-800 pb-3 mb-4">
+            <h2 class="text-2xl font-extrabold text-sky-400">7. Gestión de Usuarios y Active Directory</h2>
+            <p class="text-sm text-slate-400">Seguridad perimetral y administración centralizada de identidades en el sistema operativo.</p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div class="lg:col-span-6 space-y-4">
+              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3 text-xs">
+                <h3 class="text-sm font-bold text-amber-400 uppercase tracking-widest">Arquitectura de Directorio</h3>
+                <p class="text-slate-400">La base de la seguridad empresarial reside en no autorizar accesos de forma local sino centralizada:</p>
+                <div class="space-y-2">
+                  <div class="p-2 bg-slate-950 rounded">
+                    <strong class="text-slate-200 block">Directorio Activo (AD):</strong>
+                    <span class="text-slate-400">Estructura jerárquica de base de datos que administra usuarios y políticas mediante consultas LDAP y autenticación segura Kerberos basada en tickets de cifrado.</span>
+                  </div>
+                  <div class="p-2 bg-slate-950 rounded">
+                    <strong class="text-slate-200 block">Políticas de Grupo (GPO):</strong>
+                    <span class="text-slate-400">Políticas de configuración centralizadas administradas por el S.O. para aplicar restricciones masivas en estaciones y servidores.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Checklist de Hardening -->
+            <div class="lg:col-span-6 bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+              <div class="space-y-3">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Matriz de Endurecimiento (Hardening)</span>
+                <h4 class="text-sm font-semibold text-slate-200">Parámetros Críticos de Seguridad de Cuentas</h4>
+                
+                <div class="space-y-2 text-xs">
+                  <div class="flex justify-between items-center p-2 bg-slate-950 rounded border border-slate-800">
+                    <span class="text-slate-300">Complejidad de Contraseña</span>
+                    <span class="bg-emerald-950 text-emerald-400 font-bold px-2 py-0.5 rounded text-[10px]">REQUERIDA</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 bg-slate-950 rounded border border-slate-800">
+                    <span class="text-slate-300">Vigencia Máxima (Aging)</span>
+                    <span class="bg-emerald-950 text-emerald-400 font-bold px-2 py-0.5 rounded text-[10px]">45 DÍAS</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 bg-slate-950 rounded border border-slate-800">
+                    <span class="text-slate-300">Historial de Claves Guardadas</span>
+                    <span class="bg-emerald-950 text-emerald-400 font-bold px-2 py-0.5 rounded text-[10px]">ÚLTIMAS 12</span>
+                  </div>
+                  <div class="flex justify-between items-center p-2 bg-slate-950 rounded border border-slate-800">
+                    <span class="text-slate-300">Umbral de Bloqueo de Cuenta</span>
+                    <span class="bg-amber-950 text-amber-400 font-bold px-2 py-0.5 rounded text-[10px]">5 INTENTOS</span>
+                  </div>
+                </div>
+
+                <div class="p-3 bg-amber-950/40 border border-amber-500/20 rounded-xl text-xs text-slate-400">
+                  <strong class="text-amber-300 block mb-1">Riesgo en Ciberseguridad:</strong>
+                  Implementar un umbral de bloqueo estricto es excelente para bloquear fuerza bruta en línea, pero un atacante puede explotarlo para lanzar una denegación de servicio de identidad bloqueando masivamente las cuentas corporativas.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIAPOSITIVA 8: TÉCNICAS DE PROTECCIÓN DEL SO -->
+        <div class="slide-content hidden space-y-4">
+          <div class="border-b border-slate-800 pb-3 mb-4">
+            <h2 class="text-2xl font-extrabold text-sky-400">8. Técnicas de Protección del Sistema Operativo</h2>
+            <p class="text-sm text-slate-400">El blindaje del kernel y la asignación de privilegios en bajo nivel.</p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div class="lg:col-span-6 space-y-4">
+              <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3 text-xs">
+                <h3 class="text-sm font-bold text-amber-400 uppercase tracking-widest">Protecciones a Nivel de Kernel</h3>
+                
+                <div class="space-y-2">
+                  <div class="p-2 bg-slate-950 rounded border-l-4 border-amber-500">
+                    <strong class="text-slate-200 block">DEP / NX (Data Execution Prevention):</strong>
+                    <p class="text-slate-400 text-[11px] mt-0.5">Marca zonas de memoria como no ejecutables (ej. la pila). Si un exploit inyecta código de ejecución en el Stack, la CPU cancela el proceso de inmediato.</p>
+                  </div>
+                  
+                  <div class="p-2 bg-slate-950 rounded border-l-4 border-emerald-500">
+                    <strong class="text-slate-200 block">ASLR (Address Space Layout Randomization):</strong>
+                    <p class="text-slate-400 text-[11px] mt-0.5">Aleatoriza las ubicaciones donde se cargan los segmentos del proceso en RAM cada vez que corre. Evita que un atacante prediga direcciones fijas del sistema.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DAC vs MAC -->
+            <div class="lg:col-span-6 bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
+              <div class="space-y-3">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Estrategias de Seguridad de Acceso</span>
+                <h4 class="text-sm font-semibold text-slate-200">Modelos de Privilegios</h4>
+                
+                <div class="space-y-2 text-xs">
+                  <div class="p-3 bg-slate-950 rounded border border-slate-800">
+                    <strong class="text-slate-200 block mb-1">DAC (Discretionary Access Control):</strong>
+                    <span class="text-slate-400">El propietario de un archivo decide de forma autónoma quién tiene permisos. Sencillo pero propenso a errores humanos de permisos flojos.</span>
+                  </div>
+                  
+                  <div class="p-3 bg-slate-950 rounded border border-slate-800">
+                    <strong class="text-slate-200 block mb-1">MAC (Mandatory Access Control):</strong>
+                    <span class="text-slate-400">El sistema operativo evalúa directivas globales de seguridad rígidas e inmutables (ej. SELinux). Aunque el dueño quiera, no puede dar permisos que vulneren las reglas globales.</span>
+                  </div>
+                </div>
+
+                <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-[11px] text-slate-400">
+                  <strong class="text-sky-400 block mb-1">Conclusión del Bloque:</strong>
+                  La combinación de DEP, ASLR y esquemas MAC de alta rigidez convierte a los kernels modernos en fortalezas robustas, forzando a los cibercriminales a buscar vulnerabilidades de lógica web o ingeniería social.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Barra de Navegación inferior -->
+      <div class="flex justify-between items-center pt-6 border-t border-slate-900 relative z-10 mt-6">
+        <button id="btn-prev" class="flex items-center gap-2 text-xs font-bold bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 px-4 py-2.5 rounded-xl transition disabled:opacity-30 disabled:hover:bg-slate-900">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+          Anterior
+        </button>
+        
+        <div class="hidden sm:flex gap-1.5" id="dots-container">
+          <!-- Puntos indicadores generados por JS -->
+        </div>
+
+        <button id="btn-next" class="flex items-center gap-2 text-xs font-bold bg-gradient-to-r from-sky-500 to-indigo-600 text-slate-950 hover:from-sky-400 hover:to-indigo-500 px-5 py-2.5 rounded-xl transition disabled:opacity-35">
+          Siguiente
+          <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Pie de página global -->
+  <footer class="border-t border-slate-800/80 bg-cyber-950 py-4 px-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
+      <span>Licenciatura en Ingeniería en Ciberseguridad - Tercer Cuatrimestre</span>
+      <span class="flex items-center gap-1.5 justify-center">
+        <span>Usa las flechas</span>
+        <kbd class="bg-slate-900 border border-slate-700 px-1 py-0.5 rounded font-mono text-[9px] text-slate-400">←</kbd>
+        <kbd class="bg-slate-900 border border-slate-700 px-1 py-0.5 rounded font-mono text-[9px] text-slate-400">→</kbd>
+        <span>para navegar</span>
+      </span>
+      <span>© 2026 Universidad Alianza Hispana</span>
+    </div>
+  </footer>
+
+  <!-- Lógica de Interactividad y Navegación de Diapositivas -->
+  <script>
+    // --- ESTADO GENERAL ---
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide-content');
+    const indicator = document.getElementById('slide-indicator');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const dotsContainer = document.getElementById('dots-container');
+
+    // --- MANEJO DE NAVEGACIÓN ---
+    function updateSlide() {
+      slides.forEach((slide, idx) => {
+        if (idx === currentSlide) {
+          slide.classList.remove('hidden');
+          slide.classList.add('block');
+        } else {
+          slide.classList.remove('block');
+          slide.classList.add('hidden');
+        }
+      });
+
+      // Actualizar indicador textual
+      indicator.textContent = `Diapositiva ${currentSlide + 1} de ${slides.length}`;
+
+      // Botones anterior/siguiente desactivación
+      btnPrev.disabled = currentSlide === 0;
+      btnNext.disabled = currentSlide === slides.length - 1;
+
+      // Actualizar puntos activos
+      const dots = document.querySelectorAll('.nav-dot');
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlide) {
+          dot.className = "nav-dot h-2 w-6 rounded-full bg-sky-400 transition-all duration-300";
+        } else {
+          dot.className = "nav-dot h-2 w-2 rounded-full bg-slate-800 hover:bg-slate-700 transition-all duration-300";
+        }
+      });
+    }
+
+    function initDots() {
+      dotsContainer.innerHTML = '';
+      slides.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.className = "nav-dot h-2 w-2 rounded-full bg-slate-800 hover:bg-slate-700 transition-all duration-300";
+        dot.addEventListener('click', () => {
+          currentSlide = idx;
+          updateSlide();
+        });
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    btnPrev.addEventListener('click', () => {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    });
+
+    btnNext.addEventListener('click', () => {
+      if (currentSlide < slides.length - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    });
+
+    // Soporte teclado flechas de dirección
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' && currentSlide < slides.length - 1) {
+        currentSlide++;
+        updateSlide();
+      } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    });
+
+    // --- SIMULADOR DE DIRECCIONAMIENTO MMU (DIAPOSITIVA 1) ---
+    const mmuBaseInput = document.getElementById('mmu-base');
+    const mmuLimitInput = document.getElementById('mmu-limit');
+    const mmuLogicalInput = document.getElementById('mmu-logical');
+    const mmuCheck = document.getElementById('mmu-check');
+    const mmuResult = document.getElementById('mmu-result');
+
+    function calculateMMU() {
+      const base = parseInt(mmuBaseInput.value) || 0;
+      const limit = parseInt(mmuLimitInput.value) || 0;
+      const logical = parseInt(mmuLogicalInput.value) || 0;
+
+      if (logical >= limit) {
+        mmuCheck.innerHTML = `${logical} &lt; ${limit} ? <span class="text-red-500 font-bold ml-1">FALSO</span>`;
+        mmuResult.className = "p-3 rounded text-center font-mono font-bold text-sm bg-red-950/60 border border-red-500/50 text-red-400 animate-shake";
+        mmuResult.textContent = "TRAP: Segmentation Fault (Dirección Ilegal)";
+      } else {
+        mmuCheck.innerHTML = `${logical} &lt; ${limit} ? <span class="text-emerald-500 font-bold ml-1">VERDADERO</span>`;
+        mmuResult.className = "p-3 rounded text-center font-mono font-bold text-sm bg-emerald-950/60 border border-emerald-500/50 text-emerald-400";
+        mmuResult.textContent = `Dirección Física: ${base + logical}`;
+      }
+    }
+
+    mmuBaseInput.addEventListener('input', calculateMMU);
+    mmuLimitInput.addEventListener('input', calculateMMU);
+    mmuLogicalInput.addEventListener('input', calculateMMU);
+
+    // --- SIMULADOR ALGORITMOS DE RAM (DIAPOSITIVA 2) ---
+    let ramBlocks = [100, 500, 200, 300, 600];
+    const originalBlocks = [100, 500, 200, 300, 600];
+    const ramBlocksContainer = document.getElementById('ram-blocks');
+    const ramLog = document.getElementById('ram-log');
+    const ramPSizeInput = document.getElementById('ram-p-size');
+
+    function renderRAM() {
+      ramBlocksContainer.innerHTML = '';
+      ramBlocks.forEach((size, idx) => {
+        const blockDiv = document.createElement('div');
+        const percent = (size / 1700) * 100;
+        blockDiv.style.width = `${percent}%`;
+        blockDiv.className = "border-r border-slate-800 h-full flex flex-col items-center justify-center text-center p-1 bg-cyber-900/40 relative";
+        
+        blockDiv.innerHTML = `
+          <span class="text-[10px] font-bold text-slate-300">B${idx+1}</span>
+          <span class="text-[9px] text-sky-400">${size}MB</span>
+        `;
+        ramBlocksContainer.appendChild(blockDiv);
+      });
+    }
+
+    function allocateRAM(mode) {
+      const pSize = parseInt(ramPSizeInput.value) || 0;
+      if (pSize <= 0) return;
+
+      let allocatedIdx = -1;
+
+      if (mode === 'First') {
+        for (let i = 0; i < ramBlocks.length; i++) {
+          if (ramBlocks[i] >= pSize) {
+            allocatedIdx = i;
+            break;
+          }
+        }
+      } else if (mode === 'Best') {
+        let minDiff = Infinity;
+        for (let i = 0; i < ramBlocks.length; i++) {
+          if (ramBlocks[i] >= pSize && (ramBlocks[i] - pSize) < minDiff) {
+            minDiff = ramBlocks[i] - pSize;
+            allocatedIdx = i;
+          }
+        }
+      } else if (mode === 'Worst') {
+        let maxDiff = -1;
+        for (let i = 0; i < ramBlocks.length; i++) {
+          if (ramBlocks[i] >= pSize && (ramBlocks[i] - pSize) > maxDiff) {
+            maxDiff = ramBlocks[i] - pSize;
+            allocatedIdx = i;
+          }
+        }
+      }
+
+      if (allocatedIdx !== -1) {
+        const rest = ramBlocks[allocatedIdx] - pSize;
+        ramBlocks[allocatedIdx] = rest;
+        renderRAM();
+        logRAM(`Proceso de ${pSize}MB asignado en Bloque ${allocatedIdx + 1} (${mode} Fit). Sobra: ${rest}MB`, 'success');
+      } else {
+        logRAM(`ERROR: Proceso de ${pSize}MB no cabe. Falló la colocación por fragmentación externa.`, 'error');
+      }
+    }
+
+    function logRAM(msg, type) {
+      const p = document.createElement('p');
+      p.className = type === 'error' ? 'text-red-400 font-bold' : 'text-emerald-400';
+      p.textContent = `[RAM] ${msg}`;
+      ramLog.insertBefore(p, ramLog.firstChild);
+    }
+
+    document.getElementById('ram-reset').addEventListener('click', () => {
+      ramBlocks = [...originalBlocks];
+      renderRAM();
+      ramLog.innerHTML = `<span class="text-slate-500 block mb-1">// Historial del Asignador restablecido...</span>`;
+    });
+
+    document.getElementById('btn-ff').addEventListener('click', () => allocateRAM('First'));
+    document.getElementById('btn-bf').addEventListener('click', () => allocateRAM('Best'));
+    document.getElementById('btn-wf').addEventListener('click', () => allocateRAM('Worst'));
+
+    // --- SIMULADOR DE TABLA HASH (DIAPOSITIVA 4) ---
+    const hashTableSize = 7;
+    let hashTable = Array(7).fill(null).map(() => []);
+    const hashSlotsContainer = document.getElementById('hash-table-slots');
+    const hashConsole = document.getElementById('hash-console');
+    const hashInputKey = document.getElementById('hash-input-key');
+
+    function renderHash() {
+      hashSlotsContainer.innerHTML = '';
+      for (let i = 0; i < hashTableSize; i++) {
+        const slot = document.createElement('div');
+        slot.className = "bg-slate-900 border border-slate-800 p-2 rounded text-center";
+        
+        let keysHtml = '';
+        hashTable[i].forEach(key => {
+          keysHtml += `
+            <span class="bg-emerald-950 text-emerald-400 text-[9px] px-1 py-0.5 rounded border border-emerald-500/20 font-mono block mt-1">
+              ${key}
+            </span>
+          `;
+        });
+
+        slot.innerHTML = `
+          <div class="text-[10px] text-slate-500">I:${i}</div>
+          <div class="flex flex-col gap-1 justify-center min-h-[30px]">
+            ${keysHtml || '<span class="text-[9px] text-slate-600">-</span>'}
+          </div>
+        `;
+        hashSlotsContainer.appendChild(slot);
+      }
+    }
+
+    function insertHash() {
+      const key = parseInt(hashInputKey.value) || 0;
+      const index = key % hashTableSize;
+
+      if (hashTable[index].includes(key)) {
+        logHash(`La clave ${key} ya reside en la posición indexada ${index}.`, 'warn');
+        return;
+      }
+
+      hashTable[index].push(key);
+      renderHash();
+
+      if (hashTable[index].length > 1) {
+        logHash(`⚠️ COLISIÓN: Clave ${key} mapeada al índice ${index}. Resuelto mediante Encadenamiento.`, 'col');
+      } else {
+        logHash(`Clave ${key} guardada correctamente en índice ${index} (Mapeo Directo).`, 'ok');
+      }
+    }
+
+    function logHash(msg, type) {
+      const p = document.createElement('p');
+      if (type === 'col') p.className = 'text-amber-400 font-bold';
+      else if (type === 'warn') p.className = 'text-slate-400 italic';
+      else p.className = 'text-emerald-400';
+      p.textContent = `[Hash] ${msg}`;
+      hashConsole.insertBefore(p, hashConsole.firstChild);
+    }
+
+    document.getElementById('hash-insert').addEventListener('click', insertHash);
+    document.getElementById('hash-reset').addEventListener('click', () => {
+      hashTable = Array(7).fill(null).map(() => []);
+      renderHash();
+      hashConsole.innerHTML = `<span class="text-slate-500">// Consola Hash limpiada...</span>`;
+    });
+
+    // --- SIMULADOR DE ESTADOS DE PROCESOS (DIAPOSITIVA 6) ---
+    const btnReady = document.getElementById('p-state-ready');
+    const btnRunning = document.getElementById('p-state-running');
+    const btnBlocked = document.getElementById('p-state-blocked');
+    const stateBadge = document.getElementById('p-state-badge');
+    const registersView = document.getElementById('p-registers-view');
+
+    function updateProcessState(state) {
+      stateBadge.textContent = state.toUpperCase();
+      
+      // Control de habilitación lógico de botones de transición
+      if (state === 'Nuevo') {
+        btnReady.disabled = false;
+        btnRunning.disabled = true;
+        btnBlocked.disabled = true;
+        stateBadge.className = "px-6 py-2 bg-slate-900 border border-slate-700 rounded-full font-bold text-slate-400";
+        registersView.classList.add('hidden');
+      } else if (state === 'Listo') {
+        btnReady.disabled = true;
+        btnRunning.disabled = false;
+        btnBlocked.disabled = true;
+        stateBadge.className = "px-6 py-2 bg-sky-950 border border-sky-600 rounded-full font-bold text-sky-400 shadow-lg shadow-sky-500/10";
+        registersView.classList.add('hidden');
+      } else if (state === 'Ejecutando') {
+        btnReady.disabled = true;
+        btnRunning.disabled = true;
+        btnBlocked.disabled = false;
+        stateBadge.className = "px-6 py-2 bg-emerald-950 border border-emerald-500 rounded-full font-bold text-emerald-400 shadow-lg shadow-emerald-500/10 animate-pulse";
+        registersView.classList.remove('hidden');
+      } else if (state === 'Bloqueado') {
+        btnReady.disabled = false; // Desbloquear de nuevo a Listo
+        btnRunning.disabled = true;
+        btnBlocked.disabled = true;
+        stateBadge.className = "px-6 py-2 bg-amber-950 border border-amber-600 rounded-full font-bold text-amber-400";
+        registersView.classList.add('hidden');
+      }
+    }
+
+    btnReady.addEventListener('click', () => updateProcessState('Listo'));
+    btnRunning.addEventListener('click', () => updateProcessState('Ejecutando'));
+    btnBlocked.addEventListener('click', () => updateProcessState('Bloqueado'));
+
+    // --- INICIALIZACIONES AL CARGAR EL DOCUMENTO ---
+    window.addEventListener('DOMContentLoaded', () => {
+      initDots();
+      updateSlide();
+      calculateMMU();
+      renderRAM();
+      logRAM("Asignador cargado listo en modo simulación de particiones variables.", 'info');
+      renderHash();
+      updateProcessState('Nuevo');
+    });
+  </script>
+</body>
+</html>
